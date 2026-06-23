@@ -64,7 +64,7 @@ namespace Talabat.Api
 
             #endregion
             #region Do register to OrderService
-            builder.Services.AddScoped<IOrderService,OrderService>();
+            builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
             #endregion
             #region Do Register AutoMapper To Product Entity
             builder.Services.AddAutoMapper(typeof(MappingProfiles)); 

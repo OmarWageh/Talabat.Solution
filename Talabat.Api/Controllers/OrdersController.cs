@@ -1,8 +1,15 @@
-﻿using Microsoft.AspNetCore.Http;
+﻿using AutoMapper;
+using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using StackExchange.Redis;
+using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
+using Talabat.Api.Dtos;
+using Talabat.Api.Errors;
+using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Services.Contract;
+using Order = Talabat.Core.Entities.Order_Aggregate.Order;
 
 namespace Talabat.Api.Controllers
 {
@@ -10,16 +17,30 @@ namespace Talabat.Api.Controllers
     public class OrdersController : BaseController
     {
         private readonly IOrderService _orderService;
-        public OrdersController(IOrderService orderService)
+        private readonly IMapper _mapper;
+        public OrdersController(IOrderService orderService,IMapper mapper)
         {
             _orderService = orderService;
+            _mapper = mapper;
         }
-        [HttpPost]
-        public async Task<ActionResult> CreateOrder()
+        [HttpPost] //post: api/orders
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Order>> CreateOrder(OrderDto orderDto)
         {
-            return Ok();
+            var addrerss = _mapper.Map<AddressDto, Address>(orderDto.ShippingAddress);
+            var order = await _orderService.CreateOrderAsync(orderDto.BuyerEmail, orderDto.BasketId, orderDto.DeliveryMethodId, addrerss);
+                if (order is null)
 
+                return BadRequest(new ApiResponseToNotFound_Badrequest_Unauthorized(400));
+
+            return order;
         }
 
     }
 }
+
+
+
+
+
