@@ -7,6 +7,7 @@ using Talabat.Api.Dtos.Product;
 using Talabat.Api.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Repositories.Contract;
+using Talabat.Repository.Repository;
 using Talabat.Repository.Repository.ProductRepositry;
 
 namespace Talabat.Api.Controllers
@@ -17,11 +18,14 @@ namespace Talabat.Api.Controllers
         private readonly IProductRepository _productRepo;
         private readonly IMapper _mapper;
         private readonly ILogger<ProductsController> _logger;
-        public ProductsController(IProductRepository productRepo,IMapper mapper, ILogger<ProductsController> logger)
+        private readonly IUnitOfWork _unitOfWork;
+
+        public ProductsController(IProductRepository productRepo,IMapper mapper, ILogger<ProductsController> logger,IUnitOfWork unitOfWork)
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _logger = logger;
+            _unitOfWork = unitOfWork;
         }
         [ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]           //improve response at swagger in sucess 
@@ -52,23 +56,36 @@ namespace Talabat.Api.Controllers
             return Ok(response);
         }
         //this endpoint to get product by id 
-        [ProducesResponseType(typeof(ProductToReturnDto),StatusCodes.Status200OK)]
-        [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized),StatusCodes.Status404NotFound)]
+        [ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]
         [HttpGet("{id}")]
-        public async Task<ActionResult<ProductToReturnDto>>GetProductById(int id)
+        public async Task<ActionResult<ProductToReturnDto>> GetProductById(int id)
         {
-            if(id<=0)
-                return NotFound( new ApiResponseToNotFound_Badrequest_Unauthorized(StatusCodes.Status400BadRequest, "Invalid product id."));
+            if (id <= 0)
+                return NotFound(new ApiResponseToNotFound_Badrequest_Unauthorized(StatusCodes.Status400BadRequest, "Invalid product id."));
             var product = await _productRepo.GetAsync(id);
             if (product == null)
             {
                 _logger.LogInformation("Product with id {ProductId} not found.", id);
                 return NotFound(new ApiResponseToNotFound_Badrequest_Unauthorized(400));
             }
-               
-            return Ok(_mapper.Map<ProductToReturnDto>(product));
-           
 
+            return Ok(_mapper.Map<ProductToReturnDto>(product));
+
+
+        }
+        [HttpPost]
+        public async Task<ActionResult<CreateProductDto>>AddProduct(CreateProductDto product)
+        {
+            if (product == null)
+            
+                return NotFound(new ApiResponseToNotFound_Badrequest_Unauthorized(404));
+            if (!ModelState.IsValid)
+                return BadRequest(ModelState);
+            var productEntity = _mapper.Map<Product>(product);
+            await _productRepo.AddAsync(productEntity);
+            var result = await _unitOfWork.CompleteAsync();
+            return Ok(productEntity);
         }
     }
 }

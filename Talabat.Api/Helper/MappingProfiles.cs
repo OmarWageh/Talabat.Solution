@@ -3,7 +3,7 @@ using Talabat.Api.Dtos;
 using Talabat.Api.Dtos.Basket;
 using Talabat.Api.Dtos.Product;
 using Talabat.Core.Entities;
-using Talabat.Core.Entities.Identity;
+using Talabat.Core.Entities.Order_Aggregate;
 
 namespace Talabat.Api.Helper
 {
@@ -13,9 +13,10 @@ namespace Talabat.Api.Helper
         {
             CreateMap<Product, ProductToReturnDto>().ForMember(d => d.productBrand, o => o.MapFrom(s => s.productBrand.Name)).
                 ForMember(d => d.category, o => o.MapFrom(s => s.category.Name));
-            CreateMap<CustomerBasket, CustomerBasketDto>();
-            CreateMap<BasketItem, BasketItemDto>();
-            CreateMap<AddressDto, Address>();
+            CreateMap<CustomerBasket, CustomerBasketDto>().ReverseMap();
+            CreateMap<BasketItem, BasketItemDto>().ReverseMap();
+            CreateMap<AddressDto, Address>().ReverseMap();
+            CreateMap<Product, CreateProductDto>().ReverseMap();
         }
     }
 }

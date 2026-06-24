@@ -21,7 +21,12 @@ namespace Talabat.Repository.Repository
 
         public async Task AddAsync(T entity)
         {
-            await _dbContext.AddAsync(entity);
+          if(entity == null) throw new ArgumentNullException(nameof(entity));
+          else
+            {
+                _dbContext.Add(entity);
+            }
+          
         }
 
         public void DeleteAsync(T entity)

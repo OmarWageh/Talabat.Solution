@@ -59,7 +59,7 @@ namespace Talabat.Api
 
             #region Do register to (Product,unitofwork)
             builder.Services.AddScoped<IProductRepository,ProductRepository>();
-            builder.Services.AddScoped(typeof(IUnitOfWork), typeof(UnitOfWork));
+            builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 
             #endregion

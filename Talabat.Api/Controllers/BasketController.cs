@@ -28,7 +28,7 @@ namespace Talabat.Api.Controllers
         }
        
         [HttpPost] 
-        public async Task<ActionResult<CustomerBasket>> UpdateBasket([FromBody] CustomerBasketDto basket)
+        public async Task<ActionResult<CustomerBasket>> CreateBasket([FromBody] CustomerBasketDto basket)
         {
             var mappedBasket=_mapper.Map<CustomerBasketDto, CustomerBasket>(basket);
             var CreatedOrUpdatedBasket = await _basketRepo.UpdateBasketAsync(mappedBasket);
