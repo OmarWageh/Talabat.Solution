@@ -83,8 +83,7 @@ namespace Talabat.Api.Controllers
             if (!ModelState.IsValid)
                 return BadRequest(ModelState);
             var productEntity = _mapper.Map<Product>(product);
-            await _productRepo.AddAsync(productEntity);
-            var result = await _unitOfWork.CompleteAsync();
+           await _unitOfWork.Repository<Product>().AddAsync(productEntity);
             return Ok(productEntity);
         }
     }

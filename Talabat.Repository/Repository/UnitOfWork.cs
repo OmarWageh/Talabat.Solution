@@ -13,19 +13,20 @@ namespace Talabat.Repository.Repository
     public class UnitOfWork : IUnitOfWork
     {
         private readonly AppDbContext  _appDbContext;
-        private Dictionary<string,GenericRepository<BaseEntity>>_repositories;
+        private Dictionary<string, object>_repositories;
         public UnitOfWork(AppDbContext appDbContext)
         {
             _appDbContext = appDbContext;
 
-            _repositories = new Dictionary<string, GenericRepository<BaseEntity>>();
+            _repositories = new Dictionary<string, object>();
         }
         public IGenericRepository<TEntity> Repository<TEntity>() where TEntity : BaseEntity
         {
             var key = typeof(TEntity).Name;
             if(!_repositories.ContainsKey(key))
             {
-                var repository = new GenericRepository<TEntity>(_appDbContext) as GenericRepository<BaseEntity>;
+                var repository = new GenericRepository<TEntity>(_appDbContext);
+
                 _repositories.Add(key, repository);
             }
             return _repositories[key] as IGenericRepository<TEntity>;
