@@ -8,6 +8,7 @@ using Talabat.Core.Entities.Order_Aggregate;
 using Talabat.Core.Repositories.Contract;
 using Talabat.Core.Services.Contract;
 using Talabat.Repository.Repository;
+using Talabat.Repository.Repository.OrderRepository;
 
 namespace Talabat.Service
 {
@@ -16,13 +17,13 @@ namespace Talabat.Service
     {
         private readonly IBasketRepository _basketRepo;
         private readonly IUnitOfWork _unitofWork;
-       
+        private readonly IOrderRepository _orderRepository;
 
-        public OrderService(IBasketRepository basketRepo, IUnitOfWork unitOfWork)
+        public OrderService(IBasketRepository basketRepo, IUnitOfWork unitOfWork,IOrderRepository orderRepository)
         {
             _basketRepo = basketRepo;
             _unitofWork = unitOfWork;
-          
+            _orderRepository = orderRepository;
         }
         public async Task<Order?> CreateOrderAsync(string buyerEmail, string basketId, int deliverMethodId, Address ShippingAddress)
         {
@@ -53,16 +54,17 @@ namespace Talabat.Service
                 return null;
             return order;
         }
-
+        public async Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
+        {
+            var orderRepo =await  _orderRepository.GetOrdersForUserAsync(buyerEmail);
+            return orderRepo;
+        }
         public Task<Order> GetOrderByIdUserAsync(int orderId, string buyerEmail)
         {
             throw new NotImplementedException();
         }
 
-        public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail)
-        {
-            throw new NotImplementedException();
-        }
+    
         
     }
 }

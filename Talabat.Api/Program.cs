@@ -15,6 +15,7 @@ using Talabat.Core.Services.Contract;
 using Talabat.Repository.Data;
 using Talabat.Repository.Identity;
 using Talabat.Repository.Repository;
+using Talabat.Repository.Repository.OrderRepository;
 using Talabat.Repository.Repository.ProductRepositry;
 using Talabat.Service;
 
@@ -58,7 +59,8 @@ namespace Talabat.Api
             #endregion
 
             #region Do register to (Product,unitofwork)
-            builder.Services.AddScoped<IProductRepository,ProductRepository>();
+            builder.Services.AddScoped<IProductRepository, ProductRepository>();
+            builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
 

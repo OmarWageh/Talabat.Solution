@@ -36,7 +36,14 @@ namespace Talabat.Api.Controllers
 
             return order;
         }
-
+        [HttpGet("{buyerEmail}")]
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Order>> GetOrderToSpecficUser(string BuyerEmail)
+        {
+            var getOrderToSpecficUser = await _orderService.GetOrdersForUserAsync(BuyerEmail);
+            return Ok(getOrderToSpecficUser);
+        }
     }
 }
 
