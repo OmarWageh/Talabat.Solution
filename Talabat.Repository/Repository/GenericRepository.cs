@@ -28,7 +28,7 @@ namespace Talabat.Repository.Repository
             else
             {
                await _dbContext.AddAsync(entity);
-               await  _dbContext.SaveChangesAsync();
+             //  await  _dbContext.SaveChangesAsync();
             }
 
         }

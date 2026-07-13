@@ -31,11 +31,13 @@ namespace Talabat.Service
             var basket =await  _basketRepo.GetBasketAsync(basketId);
             // 2- Get Selected Items at Basket From Products Repo 
             var orderItems = new List<OrderItem>();
+
             if(basket?.Items?.Count>0)
             {
-                foreach(var item in basket.Items)
+                var ProductRepository =_unitofWork.Repository<Product>();
+                foreach (var item in basket.Items)
                 {
-                    var product = await _unitofWork.Repository<Product>().GetAsync(item.Id);
+                    var product = await ProductRepository.GetAsync(item.Id);
                     var productItemOrdered = new ProductItemOrdered(item.Id, product.Name, product.PictureUrl);
                     var orderItem = new OrderItem(productItemOrdered, product.Price, item.Quantity);
                     orderItems.Add(orderItem);
