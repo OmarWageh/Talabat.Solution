@@ -61,12 +61,16 @@ namespace Talabat.Service
             var orderRepo =await  _orderRepository.GetOrdersForUserAsync(buyerEmail);
             return orderRepo;
         }
-        public Task<Order> GetOrderByIdUserAsync(int orderId, string buyerEmail)
+        public async Task<Order?> GetOrderByIdUserAsync(int orderId, string buyerEmail)
         {
-            throw new NotImplementedException();
+            var orderRepo = await _orderRepository.GetSpecificOrderForSpecificUser(orderId, buyerEmail);
+            if (orderRepo is null)
+            {
+                throw new Exception("The order is Empty");
+            }
+            return orderRepo;
         }
 
-    
         
     }
 }

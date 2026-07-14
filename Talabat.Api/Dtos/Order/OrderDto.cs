@@ -1,7 +1,7 @@
 ﻿using System.ComponentModel.DataAnnotations;
 using Talabat.Core.Entities.Order_Aggregate;
 
-namespace Talabat.Api.Dtos
+namespace Talabat.Api.Dtos.Order
 {
     public class OrderDto
     {

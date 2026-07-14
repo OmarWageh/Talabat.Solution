@@ -5,6 +5,7 @@ using StackExchange.Redis;
 using System.ComponentModel.DataAnnotations;
 using System.Runtime.CompilerServices;
 using Talabat.Api.Dtos;
+using Talabat.Api.Dtos.Order;
 using Talabat.Api.Errors;
 using Talabat.Core.Entities;
 using Talabat.Core.Entities.Order_Aggregate;
@@ -37,13 +38,25 @@ namespace Talabat.Api.Controllers
 
             return order;
         }
-        [HttpGet("{buyerEmail}")]
+        [HttpGet]  // Get: url/api/Orders?email=omarwagih815@gmail.com
         [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]
-        public async Task<ActionResult<Order>> GetOrderToSpecficUser(string BuyerEmail)
+        public async Task<ActionResult<Order>> GetOrdersToSpecificUser(string BuyerEmail)
         {
             var getOrderToSpecficUser = await _orderService.GetOrdersForUserAsync(BuyerEmail);
             return Ok(getOrderToSpecficUser);
+        }
+        [HttpGet("{id}")]  // Get:Url/api/Orders/id?email=omarwagih815@gmail.com
+        [ProducesResponseType(typeof(Order), StatusCodes.Status200OK)]
+        [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]
+        public async Task<ActionResult<Order>>GetSpecificOrderToSpecificUser(int id , [FromQuery] string Email)
+        {
+
+            var order = await _orderService.GetOrderByIdUserAsync(id, Email);
+            if (order is null)
+                return NotFound(new ApiResponseToNotFound_Badrequest_Unauthorized(404));
+
+            return Ok(order);
         }
     }
 }

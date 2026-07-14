@@ -25,6 +25,17 @@ namespace Talabat.Repository.Repository.OrderRepository
             var GetOrdersBybuyerEmail = await _appDbContext.Orders.Where(o => o.BuyerEmail == buyerEmail).Include(o => o.DeliveryMethod).Include(o => o.OrderItems).OrderByDescending(o => o.OrderDate).ToListAsync();
             return GetOrdersBybuyerEmail;
         }
+        public async Task<Order?> GetSpecificOrderForSpecificUser(int id, string buyerEmail)
+        {
+            var order = await _appDbContext.Orders
+
+.Include(o => o.DeliveryMethod)
+.Include(o => o.OrderItems)
+.FirstOrDefaultAsync(o => o.BuyerEmail == buyerEmail && o.Id == id);
+
+            return order;
+
+        }
 
     }
 }

@@ -11,6 +11,7 @@ namespace Talabat.Repository.Repository.OrderRepository
     public interface IOrderRepository:IGenericRepository<Order>
     {
         public Task<IReadOnlyList<Order>> GetOrdersForUserAsync(string buyerEmail);
+        public Task<Order?> GetSpecificOrderForSpecificUser(int id, string buyerEmail);
 
     }
 }
