@@ -11,7 +11,7 @@ namespace Talabat.Api.Dtos.Order
         public Address ShippingAddress { get; set; }
         public string DeliveryMethod { get; set; }
         public decimal DeliveryMethodCost { get; set; }
-        public ICollection<OrderItem> OrderItems { get; set; } = new HashSet<OrderItem>();
+        public ICollection<OrderItemDto> OrderItems { get; set; } = new HashSet<OrderItemDto>();
         public decimal Subtotal { get; set; }
        public decimal Total { get; set; }
         public string PaymentIntentId { get; set; } = string.Empty;

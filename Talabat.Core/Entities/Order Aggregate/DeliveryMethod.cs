@@ -8,10 +8,7 @@ namespace Talabat.Core.Entities.Order_Aggregate
 {
     public class DeliveryMethod: BaseEntity
     {
-        public DeliveryMethod()
-        {
-            
-        }
+       
         public DeliveryMethod(string shortName, string description, decimal cost, string deliveryTime)
         {
             ShortName = shortName;
