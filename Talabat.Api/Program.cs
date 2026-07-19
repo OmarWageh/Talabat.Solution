@@ -23,7 +23,7 @@ namespace Talabat.Api
 {
     public class Program
     {
-        public static  async Task Main(string[] args)
+        public static async Task Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
 
@@ -63,6 +63,7 @@ namespace Talabat.Api
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
+            builder.Services.AddScoped<IAuthService, AuthService>();
 
             #endregion
             #region Do register to OrderService
