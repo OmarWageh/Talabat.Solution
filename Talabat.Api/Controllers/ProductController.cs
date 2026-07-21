@@ -1,4 +1,5 @@
 ﻿using AutoMapper;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Infrastructure;
@@ -20,15 +21,17 @@ namespace Talabat.Api.Controllers
         private readonly ILogger<ProductsController> _logger;
         private readonly IUnitOfWork _unitOfWork;
 
-        public ProductsController(IProductRepository productRepo,IMapper mapper, ILogger<ProductsController> logger,IUnitOfWork unitOfWork)
+        public ProductsController(IProductRepository productRepo, IMapper mapper, ILogger<ProductsController> logger, IUnitOfWork unitOfWork)
         {
             _productRepo = productRepo;
             _mapper = mapper;
             _logger = logger;
             _unitOfWork = unitOfWork;
         }
+       
         [ProducesResponseType(typeof(ProductToReturnDto), StatusCodes.Status200OK)]
         [ProducesResponseType(typeof(ApiResponseToNotFound_Badrequest_Unauthorized), StatusCodes.Status404NotFound)]           //improve response at swagger in sucess 
+        [Authorize]
         [HttpGet]
         public async Task<ActionResult<IReadOnlyList<ProductToReturnDto>>> GetProducts([FromQuery] string? search,
          [FromQuery] string? sort,

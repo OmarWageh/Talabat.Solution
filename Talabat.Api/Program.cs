@@ -38,7 +38,6 @@ namespace Talabat.Api
             builder.Services.AddDbContext<AppDbContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             #endregion
-
             #region Do Register to AppIdentityDbContext to create database Securty
             builder.Services.AddDbContext<AppIdentityDbContext>(options =>
                     options.UseSqlServer(builder.Configuration.GetConnectionString("IdentityConnection")));
@@ -57,20 +56,14 @@ namespace Talabat.Api
 
 
             #endregion
-
-            #region Do register to (Product,unitofwork)
+            #region Do register to (SpacificProduct,unitofwork,SpacificOrder,GenericRepository,OrderService,AuthService,AutoMapper)
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IOrderRepository, OrderRepository>();
             builder.Services.AddScoped<IUnitOfWork,UnitOfWork>();
             builder.Services.AddScoped(typeof(IGenericRepository<>), typeof(GenericRepository<>));
             builder.Services.AddScoped<IAuthService, AuthService>();
-
-            #endregion
-            #region Do register to OrderService
             builder.Services.AddScoped(typeof(IOrderService), typeof(OrderService));
-            #endregion
-            #region Do Register AutoMapper To Product Entity
-            builder.Services.AddAutoMapper(typeof(MappingProfiles)); 
+            builder.Services.AddAutoMapper(typeof(MappingProfiles));
             #endregion
             builder.Services.AddControllers()
             #region  This code changes the default validation error response format in ASP.NET Core,It makes the validation errors return in the same format defined in the ApiResponseToValidationError class,It also collects all validation error messages into a single Errors[] array.
@@ -93,8 +86,6 @@ namespace Talabat.Api
         };
     });
             #endregion
-
-
             #region DoUpdatedatabase & Send Data in DataBase From JsonFile
             var app = builder.Build();
             using var scope = app.Services.CreateScope();
@@ -119,8 +110,6 @@ namespace Talabat.Api
             #region this custom middleware to handle servererror
             app.UseMiddleware<HandleTheServerErrorMiddleware>();
             #endregion
-
-
             #region Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
@@ -128,7 +117,6 @@ namespace Talabat.Api
                 app.UseSwaggerUI();
             }  
             #endregion
-
             #region this request Delegate middleware to handle notfoundendpoint
             app.Use(async (context, next) =>
                {
@@ -145,14 +133,13 @@ namespace Talabat.Api
 
                        await context.Response.WriteAsync(json);
                    }
-               }); 
+               });
             #endregion
             app.UseHttpsRedirection();
-
-            app.UseAuthorization();
-
-
+            app.UseStaticFiles();
             app.MapControllers();
+            app.UseAuthentication();
+            app.UseAuthorization();
 
             app.Run();
         }
